@@ -1,0 +1,134 @@
+{% extends '_base.html' %}
+{% block content %}
+<script>
+    var date="",machine="",garage="",max_data=-1,min_data=-1,old_mx=-1,old_mn=-1;
+    var ll,lr,rl,rr;
+    const max = (a,b) => {
+        return a>b?a:b;
+    }
+    var updateing = false;
+    const update_message = () => {
+        updateing = true;
+        fetch("/api/latestid/",{credentials:"include"}).then(res=>{
+            return res.json();
+        }).then(data => {
+            if(data.status != "OK")
+            {
+                console.error(data);
+            }
+            else
+            {
+                if(max_data == -1&&min_data == -1)
+                {
+                    rl = -1;
+                    rr = -1;
+                    max_data = data.latestid;
+                    min_data = max(data.latestid - 20,1);
+                    ll = min_data;
+                    lr = max_data;
+                }
+                else
+                {
+                    rl = old_mx + 1;
+                    lr = old_mn - 1;
+                    max_data = data.latestid;
+                    rr = max_data;
+                    ll = min_data;
+                }
+                old_mx = max_data;
+                old_mn = min_data;
+            }
+        }).finally(() => {
+            var fetchl = (ll != -1&&lr != -1&&lr >= ll);
+            var fetchr = (rl != -1&&rr != -1&&rr >= rl);
+            if(fetchl)
+            {
+                fetch("/api/data/?" + new URLSearchParams({
+                    date: date,
+                    machine: machine,
+                    garage: garage,
+                    range: `${ll},${lr}`
+                }),{credentials:"include"}).then(res=>{
+                    if(res.status != 200)
+                    {
+                        console.error(res);
+                        return {status:"Server Error"}
+                    }
+                    return res.json();
+                }).then(data => {
+                    if(data.status == "OK")
+                    {
+                        var i=0;
+                        for(i=data.data.length-1;i>=0;--i)
+                        {
+                            document.getElementById("data").innerHTML = document.getElementById("data").innerHTML
+                            + `<li class="list-group-item"><a href="/detail/${data.data[i].id}">${data.data[i].id}</a></li>`;
+                        }
+                    }
+                }).finally(()=>{
+                    if(!fetchr)
+                    {
+                        updateing = false;
+                    }
+                });
+            }
+            if(fetchr)
+            {
+                fetch("/api/data/?" + new URLSearchParams({
+                    date: date,
+                    machine: machine,
+                    garage: garage,
+                    range: `${rl},${rr}`
+                }),{credentials:"include"}).then(res=>{
+                    if(res.status != 200)
+                    {
+                        console.error(res);
+                        return {status:"Server Error"}
+                    }
+                    return res.json();
+                }).then(data => {
+                    if(data.status == "OK")
+                    {
+                        var i=0;
+                        for(i=0;i<data.data.length;++i)
+                        {
+                            document.getElementById("data").innerHTML += `<li class="list-group-item"><a href="/detail/${data.data[i].id}">${data.data[i].id}</a></li>`;
+                        }
+                    }
+                }).finally(()=>{
+                    updateing = false;
+                });
+            }
+            if(!fetchl&&!fetchr)
+            {
+                updateing = false;
+            }
+        });
+    }
+    update_message();
+    setInterval(update_message,5000);
+    const scroll_handler = ()=>{
+        var visibleBottom = window.scrollY + document.documentElement.clientHeight;
+        var spinner = document.getElementById("spinner");
+        var spinnerY = spinner.offsetTop;
+        if(updateing)
+        {
+            setTimeout(scroll_handler,50);
+        }
+        if(spinnerY<visibleBottom&&!updateing)
+        {
+            min_data = max(min_data - 20,1);
+            update_message();
+            setTimeout(scroll_handler,50);
+        }
+    }
+    document.addEventListener('scroll',scroll_handler)
+</script>
+<ul class="list-group" id="data">
+</ul>
+<div class="d-flex justify-content-center" id="spinner">
+    <div class="spinner-border">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+{%endblock%}

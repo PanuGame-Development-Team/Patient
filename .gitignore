@@ -1,0 +1,7 @@
+Pipfile.lock
+db.sqlite3
+__pycache__/
+secret.key
+instance/
+migrations/
+settings.py

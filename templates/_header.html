@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <button class="navbar-toggler mr-3" type="button" data-toggle="collapse" data-target="#header">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="header">
+        <ul class="navbar-nav">
+            {%if headertype == "root"%}
+            {%if split_access(user)["admin"]%}
+            <li class="nav-item mr-3"><a class="nav-link" href="/admin/">后台</a></li>
+            {%endif%}
+            <form class="form-inline">
+                <input type="date" class="form-control mr-3" id="date">
+                <select class="form-control mr-3" id="machine">
+                    <option value="">（所有机器）</option>
+                    {%for machine in TYPE_OF_MACHINE%}
+                    <option value="{{machine}}">{{machine}}</option>
+                    {%endfor%}
+                </select>
+                <select class="form-control mr-3" id="garage">
+                    <option value="">（所有车间）</option>
+                    {%for garage in GARAGE_AVAILABLE%}
+                    <option value="{{garage}}">{{garage}}</option>
+                    {%endfor%}
+                </select>
+                <button type="button" class="btn btn-success mr-3" id="search">查询</button>
+            </form>
+            <script>
+                $("#search").click(function() {
+                    date = $("#date").val();
+                    machine = $("#machine").val();
+                    garage = $("#garage").val();
+                    max_data=-1;
+                    min_data=-1;
+                    document.getElementById("data").innerHTML = "";
+                    update_message();
+                    scroll_handler();
+                });
+            </script>
+            {%endif%}
+            {%if not loginpage%}
+            <li class="nav-item"><a class="nav-link" href="/logout/">登出</a></li>
+            {%endif%}
+        </ul>
+    </div>
+</nav>

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <button class="navbar-toggler mr-3" type="button" data-toggle="collapse" data-target="#header">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -7,6 +7,9 @@
             {%if headertype == "root"%}
             {%if split_access(user)["admin"]%}
             <li class="nav-item mr-3"><a class="nav-link" href="/admin/">后台</a></li>
+            {%endif%}
+            {%if split_access(user)["update"]%}
+            <li class="nav-item mr-3"><a class="nav-link" href="/write/new/">添加记录</a></li>
             {%endif%}
             <form class="form-inline">
                 <input type="date" class="form-control mr-3" id="date">
@@ -26,6 +29,8 @@
             </form>
             <script>
                 $("#search").click(function() {
+                    document.getElementById("spinner-border").style.display = "inline-block";
+                    document.getElementById("end-text").style.display = "none";
                     date = $("#date").val();
                     machine = $("#machine").val();
                     garage = $("#garage").val();
@@ -36,6 +41,10 @@
                     scroll_handler();
                 });
             </script>
+            {%elif headertype == "write"%}
+            <li class="nav-item mr-3"><a class="nav-link" href="/">主页（不保存</a></li>
+            {%elif headertype == "detail"%}
+            <li class="nav-item mr-3"><a class="nav-link" href="/">主页</a></li>
             {%endif%}
             {%if not loginpage%}
             <li class="nav-item"><a class="nav-link" href="/logout/">登出</a></li>

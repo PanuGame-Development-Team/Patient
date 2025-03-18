@@ -61,8 +61,13 @@
                         var i=0;
                         for(i=data.data.length-1;i>=0;--i)
                         {
-                            document.getElementById("data").innerHTML = document.getElementById("data").innerHTML
-                            + `<li class="list-group-item"><a href="/detail/${data.data[i].id}">${data.data[i].id}</a></li>`;
+                            document.getElementById("data").innerHTML += `
+<li class="list-group-item">
+    <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
+    <span class="float-right text-muted">${data.data[i].created_time}</span><br>
+    <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
+    <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>
+</li>`;
                         }
                     }
                 }).finally(()=>{
@@ -90,9 +95,15 @@
                     if(data.status == "OK")
                     {
                         var i=0;
-                        for(i=0;i<data.data.length;++i)
+                        for(i=data.data.length-1;i>=0;--i)
                         {
-                            document.getElementById("data").innerHTML += `<li class="list-group-item"><a href="/detail/${data.data[i].id}">${data.data[i].id}</a></li>`;
+                            document.getElementById("data").innerHTML = `
+<li class="list-group-item">
+    <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
+    <span class="float-right text-muted">${data.data[i].created_time}</span><br>
+    <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
+    <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>
+</li>` + document.getElementById("data").innerHTML;
                         }
                     }
                 }).finally(()=>{
@@ -115,11 +126,16 @@
         {
             setTimeout(scroll_handler,50);
         }
-        if(spinnerY<visibleBottom&&!updateing)
+        if(spinnerY<visibleBottom&&!updateing&&min_data!=1)
         {
             min_data = max(min_data - 20,1);
             update_message();
             setTimeout(scroll_handler,50);
+        }
+        if(min_data==1)
+        {
+            document.getElementById("spinner-border").style.display = "none";
+            document.getElementById("end-text").style.display = "block";
         }
     }
     document.addEventListener('scroll',scroll_handler)
@@ -127,8 +143,9 @@
 <ul class="list-group" id="data">
 </ul>
 <div class="d-flex justify-content-center" id="spinner">
-    <div class="spinner-border">
+    <div class="spinner-border" id="spinner-border">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+<div class="text-muted text-center" style="display:none;" id="end-text">已经到底了~~~</div>
 {%endblock%}

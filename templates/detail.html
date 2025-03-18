@@ -1,0 +1,40 @@
+{%extends "_base.html"%}
+{%block content%}
+<form>
+    <div class="form-row">
+        <div class="col-md-4">
+            <label for="machine_type">机器类型</label>
+            <input class="form-control" name="machine_type" value="{{data.machine_type}}" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="garage_id">车间编号</label>
+            <input class="form-control" name="garage_id" value="{{data.garage_id}}" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="error_id">错误代码</label>
+            <input class="form-control" name="error_id" value="{{data.error_id}}" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="datauser">记录人员</label>
+            <input class="form-control" name="datauser" value="{{data_user.username}}" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="created_time">记录时间</label>
+            <input class="form-control" name="created_time" value="{{data.created_time.strftime("%Y/%m/%d %H:%M")}}" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="errdate">报错日期</label>
+            <input class="form-control" name="errdate" value="{{data.errdate.strftime("%Y/%m/%d")}}" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="detail">维修详情</label>
+        <textarea class="form-control" name="detail" rows="10" readonly>{{data.detail}}</textarea>
+    </div>
+    {%if curuid == data.uid%}
+    <center>
+        <a href="/update/{{data.id}}/" class="btn btn-primary">编辑</a>
+    </center>
+    {%endif%}
+</form>
+{%endblock%}

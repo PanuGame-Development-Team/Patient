@@ -12,7 +12,7 @@ for conf in CONFIG:
 db.init_app(app)
 app.register_blueprint(api_blueprint)
 @app.route("/",methods=["GET"])
-def index():#######################################
+def index():
     ses = readSession(request.cookies)
     if ses[0] == -1:
         return redirect("/login/")
@@ -20,7 +20,7 @@ def index():#######################################
     return render_template("index.html",headertype="root",user=user,**default_dict(ses[1],request))
 @app.route("/login",methods=["GET","POST"])
 @app.route("/login/",methods=["GET","POST"])
-def login():#######################################
+def login():
     ses = readSession(request.cookies)
     if ses[0] != -1:
         return redirect("/")
@@ -56,6 +56,50 @@ def login():#######################################
         else:
             flash("表单信息不全，请重新输入。","danger")
             return redirect("/login/")
+@app.route("/write/new",methods=["GET","POST"])                             # 图片添加按钮
+@app.route("/write/new/",methods=["GET","POST"])
+@app.route("/update/<int:postid>",methods=["GET","POST"])
+@app.route("/update/<int:postid>/",methods=["GET","POST"])
+@ACCESS_REQUIRE_HTML(["UPDATE"])
+def write(ses,user,postid = -1):
+    data = Data.query.get(postid)
+    if not data:
+        data = Data()
+        data.uid = ses[0]
+        data.machine_type = ""
+        data.garage_id = ""
+        data.error_id = ""
+        data.detail = ""
+        data.errdate = datetime.today()
+    if data.uid != ses[0]:
+        flash("您没有权限修改他人成果。","danger")
+        return redirect("/")
+    if request.method == "GET":
+        return render_template("write.html",headertype="write",data=data,**default_dict(ses[1],request))
+    else:
+        if lin(["machine_type","garage_id","error_id","detail","errdate"],request.form):
+            data.machine_type = request.form["machine_type"]
+            data.garage_id = request.form["garage_id"]
+            data.error_id = request.form["error_id"]
+            data.detail = request.form["detail"]
+            data.errdate = datetime.strptime(request.form["errdate"],"%Y-%m-%d")
+            db.session.add(data)
+            db.session.commit()
+            flash("提交成功","success")
+            return redirect("/")
+        else:
+            flash("某些字段为空，请重新输入。","danger")
+            return redirect("/write/new/")
+@app.route("/detail/<int:postid>",methods=["GET"])
+@app.route("/detail/<int:postid>/",methods=["GET"])
+@ACCESS_REQUIRE_HTML(["READ"])
+def detail(ses,user,postid):
+    data = Data.query.get(postid)
+    if not data:
+        flash("数据不存在","danger")
+        return redirect("/")
+    data_user = User.query.get(data.uid)
+    return render_template("detail.html",headertype="detail",curuid=ses[0],data=data,data_user=data_user,**default_dict(ses[1],request))
 @app.route("/logout",methods=["GET"])
 @app.route("/logout/",methods=["GET"])
 def logout():

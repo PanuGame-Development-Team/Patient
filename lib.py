@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask import jsonify,request
+from flask import jsonify,request,flash,redirect
 from os import path as ospath
 from constances import *
 from settings import *
@@ -48,7 +48,7 @@ def createSession(uid,content):
 def ACCESS_REQUIRE(access):
     def ACCESS_REQUIRE_DECORATOR(func):
         @_wraps(func)
-        def ACCESS_REQUIRE_HANDLER():
+        def ACCESS_REQUIRE_HANDLER(*args,**kwargs):
             ses = readSession(request.cookies)
             if ses[0] != -1:
                 user = User.query.get(ses[0])
@@ -56,10 +56,31 @@ def ACCESS_REQUIRE(access):
                     for i in access:
                         if not user.access & ACCESS[i]:
                             return jsonify({"latestid":-1,"status":"AccessDenied"}),403
-                    return func(ses,user)
+                    return func(ses,user,*args,**kwargs)
                 else:
                     return jsonify({"latestid":-1,"status":"UserNotFound"}),404
             else:
                 return jsonify({"latestid":-1,"status":"LoginRequired"}),402
+        return ACCESS_REQUIRE_HANDLER
+    return ACCESS_REQUIRE_DECORATOR
+def ACCESS_REQUIRE_HTML(access):
+    def ACCESS_REQUIRE_DECORATOR(func):
+        @_wraps(func)
+        def ACCESS_REQUIRE_HANDLER(*args,**kwargs):
+            ses = readSession(request.cookies)
+            if ses[0] != -1:
+                user = User.query.get(ses[0])
+                if user:
+                    for i in access:
+                        if not user.access & ACCESS[i]:
+                            flash("权限不足","danger")
+                            return redirect("/"),403
+                    return func(ses,user,*args,**kwargs)
+                else:
+                    flash("用户不存在","danger")
+                    return redirect("/"),404
+            else:
+                flash("请先登录","danger")
+                return redirect("/"),402
         return ACCESS_REQUIRE_HANDLER
     return ACCESS_REQUIRE_DECORATOR

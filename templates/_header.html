@@ -45,6 +45,24 @@
             <li class="nav-item mr-3"><a class="nav-link" href="/">主页（不保存</a></li>
             {%elif headertype == "detail"%}
             <li class="nav-item mr-3"><a class="nav-link" href="/">主页</a></li>
+            {%elif headertype == "admin"%}
+            <li class="nav-item mr-3"><a class="nav-link" href="/">主页</a></li>
+            <form class="form-inline">
+                <select class="form-control mr-3" id="category">
+                    {%for category,text in CATEGORIES.items()%}
+                    <option value="{{category}}"{%if category == 1%} selected{%endif%}>{{text}}</option>
+                    {%endfor%}
+                </select>
+                <input type="number" class="form-control mr-3" id="limit" value="30" min="10" max="300">
+                <button type="button" class="btn btn-success mr-3" id="search">查询</button>
+                <script>
+                    $("#search").click(function(){
+                        category = parseInt($("#category").val());
+                        limit = parseInt($("#limit").val());
+                        update_logging();
+                    });
+                </script>
+            </form>
             {%endif%}
             {%if not loginpage%}
             <li class="nav-item"><a class="nav-link" href="/logout/">登出</a></li>

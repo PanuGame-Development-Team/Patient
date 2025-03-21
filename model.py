@@ -17,7 +17,7 @@ class Data(db.Model):
             'garage_id':self.garage_id,
             'error_id':self.error_id,
             'detail':self.detail,
-            'errdate':self.errdate.strftime("%Y/%m/%d %H:%M"),
+            'errdate':self.errdate.strftime("%Y/%m/%d"),
             'created_time':self.created_time.strftime("%Y/%m/%d %H:%M"),
         }
     id = db.Column(db.Integer,primary_key=True)
@@ -29,10 +29,19 @@ class Data(db.Model):
     errdate = db.Column(db.DateTime,nullable=False)
     created_time = db.Column(db.DateTime,default=datetime.now,index=True)
 class Logging(db.Model):
+    def __todict__(self):
+        return {
+            'id':self.id,
+            'uid':self.uid,
+            'data_id':self.data_id,
+            'describe':self.describe,
+            'category':self.category,
+            'date':self.date.strftime("%Y/%m/%d %H:%M"),
+        }
     id = db.Column(db.Integer,primary_key=True)
-    uid = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False,index=True)
-    data_id = db.Column(db.Integer,db.ForeignKey('data.id'),index=True)
-    type = db.Column(db.Integer,nullable=False)
+    uid = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False,index=True,default=-1)
+    data_id = db.Column(db.Integer,db.ForeignKey('data.id'),index=True,default=-1)
+    describe = db.Column(db.Unicode(128),nullable=False,server_default='')
     category = db.Column(db.Integer,nullable=False)
     date = db.Column(db.DateTime,nullable=False)
 class Session(db.Model):

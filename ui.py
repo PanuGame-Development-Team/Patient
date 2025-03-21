@@ -18,6 +18,7 @@ def default_dict(session,request,loginpage=False):
     dic["APP_VERSION"] = APP_VERSION
     dic["APP_VERSYM"] = APP_VERSYM
     dic["CATEGORIES"] = CATEGORIES
+    dic["SHOW_COLOR"] = SHOW_COLOR
     dic["ACCESS"] = ACCESS
     
     dic["GARAGE_AVAILABLE"] = GARAGE_AVAILABLE

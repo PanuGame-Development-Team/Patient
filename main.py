@@ -5,12 +5,14 @@ from lib import *
 from constances import *
 from settings import *
 from api import app as api_blueprint
+from admin import app as admin_blueprint
 app = Flask(APP_NAME)
 app.secret_key = SECRET_KEY
 for conf in CONFIG:
     app.config[conf] = CONFIG[conf]
 db.init_app(app)
 app.register_blueprint(api_blueprint)
+app.register_blueprint(admin_blueprint)
 @app.route("/",methods=["GET"])
 def index():
     ses = readSession(request.cookies)

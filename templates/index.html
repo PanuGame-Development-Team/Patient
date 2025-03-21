@@ -61,13 +61,20 @@
                         var i=0;
                         for(i=data.data.length-1;i>=0;--i)
                         {
-                            document.getElementById("data").innerHTML += `
+                            document.getElementById("data").appendChild(document.createElement("li"));
+                            document.getElementById("data").lastChild.className = "list-group-item";
+                            document.getElementById("data").lastChild.innerHTML = `
+    <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
+    <span class="float-right text-muted">${data.data[i].created_time}</span><br>
+    <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
+    <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>`;
+/*                            document.getElementById("data").innerHTML += `
 <li class="list-group-item">
     <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
     <span class="float-right text-muted">${data.data[i].created_time}</span><br>
     <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
     <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>
-</li>`;
+</li>`;*/
                         }
                     }
                 }).finally(()=>{
@@ -97,13 +104,20 @@
                         var i=0;
                         for(i=data.data.length-1;i>=0;--i)
                         {
-                            document.getElementById("data").innerHTML = `
+                            document.getElementById("data").insertBefore(document.createElement("li"),document.getElementById("data").firstChild);
+                            document.getElementById("data").firstChild.className = "list-group-item";
+                            document.getElementById("data").firstChild.innerHTML = `
+    <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
+    <span class="float-right text-muted">${data.data[i].created_time}</span><br>
+    <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
+    <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>`;
+/*                            document.getElementById("data").innerHTML = `
 <li class="list-group-item">
     <a href="/detail/${data.data[i].id}">${data.data[i].error_id}</a>
     <span class="float-right text-muted">${data.data[i].created_time}</span><br>
     <span class="text-muted">机器类型：${data.data[i].machine_type}</span>
     <span class="float-right text-muted">车间：${data.data[i].garage_id}</span>
-</li>` + document.getElementById("data").innerHTML;
+</li>` + document.getElementById("data").innerHTML;*/
                         }
                     }
                 }).finally(()=>{

@@ -33,6 +33,9 @@ def login():
             user = User.query.filter_by(username=request.form["username"]).first()
             if user:
                 if check_password_hash(user.password,request.form["password"]):
+                    user.latest_login_time = datetime.now()
+                    db.session.add(user)
+                    db.session.commit()
                     res = redirect("/")
                     res.set_cookie("sessionid",createSession(user.id,{}),max_age=8640000)
                     return res

@@ -74,13 +74,13 @@ def ACCESS_REQUIRE_HTML(access):
                     for i in access:
                         if not user.access & ACCESS[i]:
                             flash("权限不足","danger")
-                            return redirect("/"),403
+                            return redirect("/")
                     return func(ses,user,*args,**kwargs)
                 else:
                     flash("用户不存在","danger")
-                    return redirect("/"),404
+                    return redirect("/")
             else:
                 flash("请先登录","danger")
-                return redirect("/"),402
+                return redirect("/")
         return ACCESS_REQUIRE_HANDLER
     return ACCESS_REQUIRE_DECORATOR

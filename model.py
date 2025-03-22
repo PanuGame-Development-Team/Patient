@@ -7,7 +7,7 @@ class User(db.Model):
     password = db.Column(db.String(162),nullable=False)#hashed password
     access = db.Column(db.Integer,nullable=False,default=0)
     created_time = db.Column(db.DateTime,default=datetime.now)
-    latest_login_time = db.Column(db.DateTime,default=datetime.now,onupdate=datetime.now)
+    latest_login_time = db.Column(db.DateTime,default=datetime.now)
 class Data(db.Model):
     def __todict__(self):
         return {

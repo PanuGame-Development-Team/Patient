@@ -1,9 +1,10 @@
 APP_NAME = "Patient"
-APP_VERSION = "1.0.0-250322-alpha"
-APP_VERSYM = "Abstract Ant"
+APP_VERSION = "1.0.1-250325-beta"
+APP_VERSYM = "Abstract Beetle"
 SECRET_KEY = open("secret.key").read()
 HOST = "127.0.0.1"
 PORT = 47489
 CATEGORIES = {0:"DEBUG",1:"INFO",2:"SUSPICIOUS",3:"WARNING",4:"ERROR",5:"CRITICAL"}
+S2NCATEGORY = {"DEBUG":0,"INFO":1,"SUSPICIOUS":2,"WARNING":3,"ERROR":4,"CRITICAL":5}
 SHOW_COLOR = {0:"secondary",1:"info",2:"warning",3:"warning",4:"danger",5:"danger"}
 ACCESS = {"READ":1,"UPDATE":2,"ADMIN":4}

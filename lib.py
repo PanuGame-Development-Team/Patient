@@ -45,6 +45,16 @@ def createSession(uid,content):
     db.session.add(session)
     db.session.commit()
     return session.session_id
+def syslog(message,category,uid=-1,data=-1):
+    log = Logging()
+    log.uid = uid
+    log.describe = message
+    log.category = category
+    log.data_id = data
+    log.date = datetime.now()
+    db.session.add(log)
+    db.session.commit()
+
 def ACCESS_REQUIRE(access):
     def ACCESS_REQUIRE_DECORATOR(func):
         @_wraps(func)

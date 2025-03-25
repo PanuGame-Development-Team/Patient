@@ -7,9 +7,9 @@
         return a>b?a:b;
     }
     var updateing = false;
-    const update_message = () => {
+    const update_message = async () => {
         updateing = true;
-        fetch("/api/latestid/",{credentials:"include"}).then(res=>{
+        await fetch("/api/latestid/",{credentials:"include"}).then(res=>{
             return res.json();
         }).then(data => {
             if(data.status != "OK")
@@ -130,7 +130,6 @@
             }
         });
     }
-    update_message();
     setInterval(update_message,5000);
     const scroll_handler = ()=>{
         var visibleBottom = window.scrollY + document.documentElement.clientHeight;
@@ -152,7 +151,8 @@
             document.getElementById("end-text").style.display = "block";
         }
     }
-    document.addEventListener('scroll',scroll_handler)
+    update_message().then(scroll_handler);
+    document.addEventListener('scroll',scroll_handler);
 </script>
 <ul class="list-group" id="data">
 </ul>

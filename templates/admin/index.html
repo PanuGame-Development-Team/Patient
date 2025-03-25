@@ -39,12 +39,12 @@
                         li.innerHTML += "用户：" + data.data[i].uid;
                         if(data.data[i].data_id!=-1)
                         {
-                            li.innerHTML += "，记录：" + data.data[i].data_id;
+                            li.innerHTML += "，数据：" + data.data[i].data_id;
                         }
                     }
                     else if(data.data[i].data_id!=-1)
                     {
-                        li.innerHTML += "记录：" + data.data[i].data_id;
+                        li.innerHTML += "数据：" + data.data[i].data_id;
                     }
                     {%for category,text in CATEGORIES.items()%}
                     if(data.data[i].category == "{{category}}")

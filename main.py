@@ -51,6 +51,7 @@ def login():
                     db.session.add(user)
                     db.session.commit()
                     flash("注册成功，请重新登录","success")
+                    syslog("用户%s注册"%user.username,S2NCATEGORY["SUSPICIOUS"],user.id)
                     return redirect("/login/")
                 else:
                     flash("密码长度必须大于8位。","danger")
@@ -77,7 +78,8 @@ def write(ses,user,postid = -1):
         data.detail = ""
         data.errdate = datetime.today()
     if data.uid != ses[0]:
-        flash("您没有权限修改他人成果。","danger")
+        flash("您没有权限修改他人成果。此事将被通报。","danger")
+        syslog("用户%s尝试修改他人成果"%user.username,S2NCATEGORY["WARNING"],data.uid,data.id)
         return redirect("/")
     if request.method == "GET":
         return render_template("write.html",headertype="write",data=data,**default_dict(ses[1],request))

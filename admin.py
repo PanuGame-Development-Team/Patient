@@ -48,8 +48,10 @@ def user_edit(ses,user,uid):
                 access |= ACCESS["ADMIN"]
             aduser.access = access
             db.session.add(aduser)
+            Session.query.filter_by(uid=uid).delete()
             db.session.commit()
-            flash("修改成功","success")
+            syslog("管理员%s修改用户信息"%user.username,S2NCATEGORY["INFO"],aduser.id)
+            flash("修改成功，修改信息将通报。","success")
             return redirect("/admin/user/")
         else:
             flash("表单信息不全","danger")
@@ -72,7 +74,8 @@ def data_edit(ses,user,dataid):
             addata.errdate = datetime.strptime(request.form["errdate"],"%Y-%m-%d")
             db.session.add(addata)
             db.session.commit()
-            flash("修改成功","success")
+            syslog("管理员%s修改数据信息"%user.username,S2NCATEGORY["INFO"],data=addata.id)
+            flash("修改成功，修改信息将通报。","success")
             return redirect("/admin/data/")
         else:
             flash("表单信息不全","danger")

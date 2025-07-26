@@ -1,0 +1,113 @@
+{% extends '_base.html' %}
+{% block content %}
+<script>
+    var lowestid,end=false,updating=false;
+    const ws = new WebSocket("ws://" + window.location.host + "/record/ws/");
+    ws.onopen = (event)=>{
+        ws.send('{"type":"{{type}}","id":{{id}}}');
+    }
+    ws.onmessage = (event)=>{
+        const data = JSON.parse(event.data);
+        update(data);
+    }
+    const update = (data) => {
+        if(data.status==404)
+        {
+            document.getElementById("spinner-border").style.display = "none";
+            document.getElementById("end-text").style.display = "block";
+            end=true;
+        }
+        if(data.status==403)
+        {
+            document.getElementById("spinner-border").style.display = "none";
+            document.getElementById("end-text").style.display = "block";
+            document.getElementById("end-text").innerText = "你没有查看此处日志的权限";
+            end=true;
+        }
+        if(data.status!=200)
+        {
+            return;
+        }
+        var html = `
+<a href="/record/detail/${data.id}">${data.title}</a>
+<span class="float-right text-muted">${data.created_time}</span><br>
+<span class="text-muted">工厂：${data.factory}</span>
+<span class="float-right text-muted">车间：${data.garage}</span>
+<br>
+<span class="text-muted">流水线：${data.pipeline}</span>
+<span class="float-right text-muted">机器：${data.machine}</span>`.replace("\n","");
+        const node = document.createElement("li");
+        node.className = "list-group-item";
+        node.innerHTML = html;
+        if(data.position == "up")
+        {
+            document.getElementById("data").insertBefore(node,document.getElementById("data").firstChild);
+        }
+        else
+        {
+            document.getElementById("data").appendChild(node);
+            lowestid = data.id;
+        }
+        updating=false;
+        scheck();
+    }
+    
+    const scheck = () => {
+        if(end||updating)
+        {
+            return;
+        }
+        updating=true;
+        var visibleBottom = window.scrollY + document.documentElement.clientHeight;
+        var spinner = document.getElementById("spinner");
+        var spinnerY = spinner.offsetTop;
+        if(spinnerY<visibleBottom+1600)
+        {
+            var query={};
+            query.lowestid = lowestid;
+            ws.send(JSON.stringify(query));
+        }
+        else
+        {
+            updating = false;
+        }
+    }
+    document.addEventListener('scroll',scheck);
+</script>
+<nav>
+    <ol class="breadcrumb">
+        {%if type == "garage"%}
+        <li class="breadcrumb-item"><a href="/record/factory/{{object.factory.id}}/">{{object.factory.index}}</a></li>
+        {%elif type == "pipeline"%}
+        <li class="breadcrumb-item"><a href="/record/factory/{{object.garage.factory.id}}/">{{object.garage.factory.index}}</a></li>
+        <li class="breadcrumb-item"><a href="/record/garage/{{object.garage.id}}/">{{object.garage.index}}</a></li>
+        {%endif%}
+        <li class="breadcrumb-item active">{{object.index}}</li>
+        {%if type == "factory"%}
+        <li class="breadcrumb-item">
+            <span>{</span>
+            {%for i in object.garage_set.all%}
+            <a class="ml-1 mr-1" href="/record/garage/{{i.id}}/">{{i.index}}</a>
+            {%endfor%}
+            <span>}</span>
+        </li>
+        {%elif type == "garage"%}
+        <li class="breadcrumb-item">
+            <span>{</span>
+            {%for i in object.pipeline_set.all%}
+            <a class="ml-1 mr-1" href="/record/pipeline/{{i.id}}/">{{i.index}}</a>
+            {%endfor%}
+            <span>}</span>
+        </li>
+        {%endif%}
+    </ol>
+</nav>
+<ul class="list-group" id="data">
+</ul>
+<div class="d-flex justify-content-center" id="spinner">
+    <div class="spinner-border" id="spinner-border">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="text-muted text-center" style="display:none;" id="end-text">已经到底了~~~</div>
+{%endblock%}

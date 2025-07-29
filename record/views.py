@@ -8,9 +8,10 @@ from django.views.decorators.http import require_http_methods
 from .models import Record
 from user.models import check_access
 from uuid import uuid4
-from json import dumps
+from json import dumps,loads
 from markdown import markdown
 from csv import DictWriter
+from .lib import *
 
 @require_http_methods(["GET"])
 @login_required
@@ -77,14 +78,9 @@ def export(request,type,id):
                    "garage","factory","created_time"]
         writer = DictWriter(file,headers,extrasaction="ignore")
         writer.writeheader()
-        query = Record.objects
-        object = fetch(type,id)
-        if type == "pipeline":
-            query = query.filter(machine__pipeline=object)
-        elif type == "garage":
-            query = query.filter(machine__pipeline__garage=object)
-        elif type == "factory":
-            query = query.filter(machine__pipeline__garage__factory=object)
+        query = place_filter(Record.objects,type,fetch(type,id))
+        filter = loads(request.GET.get("filter",[None,None,None,None]))
+        query = search_filter(query,*filter)
         objects = query.all()
         for i in objects:
             writer.writerow(i.tojson())

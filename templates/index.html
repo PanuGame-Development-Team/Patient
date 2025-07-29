@@ -101,9 +101,23 @@
         })
         return false;
     }
-    
+
     const filter = () => {
-        
+        document.getElementById("spinner-border").style.display = "block";
+        document.getElementById("end-text").style.display = "none";
+        end=false;
+        var i;
+        var filterform = document.getElementById("filter");
+        var inputs = filterform.getElementsByTagName("input");
+        document.getElementById("data").innerHTML = "";
+        var dict = {"type":"{{type}}","id":{{id}} };
+        dict["filter"] = [];
+        for(i=0;i<inputs.length;++i)
+        {
+            dict["filter"].push(inputs[i].value);
+        }
+        ws.send(JSON.stringify(dict));
+        document.getElementById("exportbutton").setAttribute("href",`/record/export/{{type}}/{{id}}/?filter=${encodeURIComponent(JSON.stringify(dict["filter"]))}`)
     }
 </script>
 <nav>
@@ -138,7 +152,7 @@
 <a class="btn btn-primary text-white mb-2 mr-3" href="/record/add/?id={{object.id}}">添加新纪录</a>
 {%endif%}
 {%if exportable%}
-<a class="btn btn-primary text-white mb-2 mr-3" href="/record/export/{{type}}/{{id}}/">导出所有记录</a>
+<a id="exportbutton" class="btn btn-primary text-white mb-2 mr-3" href="/record/export/{{type}}/{{id}}/">导出所有记录</a>
 {%endif%}
 <button class="btn btn-primary mb-2 mr-3" data-target="#filter" data-toggle="collapse">筛选</button>
 <div class="collapse mb-3" id="filter">
@@ -147,7 +161,7 @@
         <input class="form-control mr-2" placeholder="机器名称"/>
         <span>起始：</span><input class="form-control mr-2" type="date"/>
         <span>终止：</span><input class="form-control mr-2" type="date"/>
-        <button class="btn btn-primary" onclick="">应用</button>
+        <button class="btn btn-primary" type="button" onclick="filter()">应用</button>
     </form>
 </div>
 <ul class="list-group" id="data">

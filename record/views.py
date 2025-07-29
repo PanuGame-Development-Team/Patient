@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from core.ui import default_dict
 from core.models import fetch,Factory,Pipeline,Machine
 from core.constants import *
+from Patient.settings import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -50,7 +51,7 @@ def edit(request,id=None):
         filelist = []
         for i in files:
             filename = uuid4().hex + "." + i.name.split(".")[-1]
-            with open("static/uploads/" + filename,"wb") as file:
+            with open(STATIC_ROOT + "/uploads/" + filename,"wb") as file:
                 for chunk in i.chunks():
                     file.write(chunk)
             filelist.append("/static/uploads/" + filename)
@@ -72,8 +73,8 @@ def edit(request,id=None):
 @require_http_methods(["GET"])
 @login_required
 def export(request,type,id):
-    filename = "static/exports/" + uuid4().hex + ".csv"
-    with open(filename,"w",encoding="UTF-8") as file:
+    filename = uuid4().hex + ".csv"
+    with open(STATIC_ROOT + "/exports/" + filename,"w",encoding="UTF-8") as file:
         headers = ["id","user","title","errcode","detail","solution","machine","pipeline",
                    "garage","factory","created_time"]
         writer = DictWriter(file,headers,extrasaction="ignore")
@@ -84,4 +85,4 @@ def export(request,type,id):
         objects = query.all()
         for i in objects:
             writer.writerow(i.tojson())
-    return redirect("/" + filename)
+    return redirect("/static/exports/" + filename)

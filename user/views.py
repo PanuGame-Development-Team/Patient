@@ -18,6 +18,7 @@ def loginview(request):
         user = authenticate(request,username=username,password=password)
         if user:
             login(request,user)
+            request.session["firstvisit"] = True
             return redirect("/" if not request.GET.get("next") else request.GET.get("next"))
         else:
             messages.error(request,"用户名或密码错误")

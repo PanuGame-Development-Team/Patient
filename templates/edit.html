@@ -1,0 +1,39 @@
+{% extends '_base.html' %}
+{% block content %}
+<form action="" enctype="multipart/form-data" method="post">
+    {%csrf_token%}
+    <div class="form-group">
+        <label for="title">标题（现象简述）</label>
+        <input class="form-control" name="title" value="{{object.title|default:''}}"/>
+    </div>
+    <div class="form-group">
+        <label for="errcode">错误代码</label>
+        <input class="form-control" name="errcode" value="{{object.errcode|default:''}}"/>
+    </div>
+    <div class="form-group">
+        <label for="detail">错误详情</label>
+        <textarea class="form-control" name="detail" rows="5">{{object.detail|default:''}}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="solution">解决方案</label>
+        <textarea class="form-control" name="solution" rows="5">{{object.solution|default:''}}</textarea>
+    </div>
+    <div class="form-group">
+        <label>机器类型</label>
+        {%if operation == "modify"%}
+        <input class="form-control" readonly value="{{object.machine}}">
+        {%else%}
+        <select name="machine" class="form-control">
+            {%for i in machines%}
+            <option value="{{i.id}}">{{i}}</option>
+            {%endfor%}
+        </select>
+        {%endif%}
+    </div>
+    <div class="form-group">
+        <label for="attachments">请选择你要添加的附件</label><br>
+        <input name="attachments" type="file" multiple/>
+    </div>
+    <center><button type="submit" class="btn btn-primary">提交</button></center>
+</form>
+{% endblock %}

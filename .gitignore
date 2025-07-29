@@ -4,3 +4,5 @@ db.sqlite3
 tests.py
 migrations/
 properties.py
+uploads/
+exports

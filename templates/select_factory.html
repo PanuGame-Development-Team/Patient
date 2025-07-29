@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block content %}
+<div class="card ml-auto mr-auto mt-3" style="width: 18rem;">
+    <center>
+        <span class="mt-3">请选择一个工厂来查看记录：</span><br>
+        {%for i in factories%}
+        <a href="/record/factory/{{i.id}}/">{{i.index}}</a><br>
+        {%endfor%}
+    </center>
+</div>
+{%endblock%}

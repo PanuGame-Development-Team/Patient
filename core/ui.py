@@ -25,4 +25,7 @@ def default_dict(request,origdic=dict()):
     dic["S2NCATEGORY"] = S2NCATEGORY
     dic["SHOW_COLOR"] = SHOW_COLOR
     dic["ACCESS"] = ACCESS
+    if request.session.get("firstvisit"):
+        dic["firstvisit"] = True
+        request.session.pop("firstvisit")
     return dic

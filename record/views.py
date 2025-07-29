@@ -79,7 +79,7 @@ def export(request,type,id):
         writer = DictWriter(file,headers,extrasaction="ignore")
         writer.writeheader()
         query = place_filter(Record.objects,type,fetch(type,id))
-        filter = loads(request.GET.get("filter",[None,None,None,None]))
+        filter = loads(request.GET.get("filter",'["","","",""]'))
         query = search_filter(query,*filter)
         objects = query.all()
         for i in objects:

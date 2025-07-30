@@ -103,4 +103,6 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static_root')
 
 LOGIN_URL = "/login/"
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8888']
+
 from .properties import *

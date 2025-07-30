@@ -85,7 +85,7 @@
         html += "<hr><h5>附件</h5>"
         for(var i=0;i<data.attachments.length;++i)
         {
-            if(data.attachments[i].endsWith(".png")||data.attachments[i].endsWith(".jpg")||data.attachments[i].endsWith(".jpeg")||data.attachments[i].endsWith(".gif"))
+            if(data.attachments[i].endsWith(".png")||data.attachments[i].endsWith(".jpg")||data.attachments[i].endsWith(".jpeg")||data.attachments[i].endsWith(".gif")||data.attachments[i].endsWith(".svg"))
             {
                 html += `<img class='w-100' src="${data.attachments[i]}"/>`
             }

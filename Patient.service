@@ -1,0 +1,11 @@
+[Unit]
+Description=Patient logging service
+After=network.target
+[Service]
+Restart=always
+RestartSec=1
+Type=simple
+WorkingDirectory={{place}}
+ExecStart={{place}}/venv/bin/daphne Patient.asgi:application -b 0.0.0.0
+[Install]
+WantedBy=multi-user.target

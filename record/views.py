@@ -65,7 +65,7 @@ def edit(request,id=None):
             try:
                 object.machine = Machine.objects.filter(id=int(request.POST.get("machine",""))).first()
             except:
-                messages.warning("请输入合理的结果")
+                messages.warning(request,"请输入合理的结果")
                 return redirect(f"/record/pipeline/{pipeline.id}/")
         object.save()
         messages.success(request,"修改成功" if id else "添加成功")

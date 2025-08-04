@@ -25,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", lambda request:redirect("/record/",permanent=True)),
     path("record/",include("record.urls")),
+    path("aichat/",include("aichat.urls")),
     *userurl
 ]

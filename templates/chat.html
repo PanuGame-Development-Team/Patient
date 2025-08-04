@@ -1,0 +1,50 @@
+{% extends '_base.html' %}
+{% block content %}
+<script>
+    const ws = new WebSocket("ws://" + window.location.host + "/aichat/ws/");
+    ws.onmessage = (event)=>{
+        if(event.data.startsWith("json-references: "))
+        {
+            var references = JSON.parse(event.data.replace("json-references: ",""));
+            const ol = document.getElementById("references");
+            var html="";
+            for(var i=0;i<references.length;++i)
+            {
+                html += `<li><a onclick="popup(${references[i].id})" href="javascript:void(0);">${references[i].title} - ${references[i].errcode}</a></li>`;
+                localStorage.setItem(references[i].id,JSON.stringify(references[i]));
+            }
+            ol.innerHTML = html;
+        }
+        else
+        {
+            document.getElementById("output").innerText += event.data;
+        }
+    };
+    const submit_message = ()=>{
+        $("#output").text("");
+        $("#references").text("");
+        ws.send($("#message").text());
+    }
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <form>
+            <textarea class="form-control mb-2" id="message" rows="5" placeholder="问我些关于机器错误的问题，我来给你解答~"></textarea>
+            <button class="btn btn-primary" type="button" onclick="submit_message()">发送</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <span>引用资料：</span>
+                    <ol id="references">
+                    </ol>
+                </div>
+                <div id="output"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "components/content_modal.html" %}
+{% endblock %}

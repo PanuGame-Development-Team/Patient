@@ -18,11 +18,13 @@ Patient是一个开源的系统，用于帮助维修工人管理与查阅机器�
 ```bash
 apt update
 apt install -y virtualenv redis nginx
+curl -fsSL https://ollama.com/install.sh|bash
 ```
 
 对于 RHEL/CentOS 7（需以root执行）
 ```bash
 yum install virtualenv redis nginx
+curl -fsSL https://ollama.com/install.sh|bash
 ```
 ### 自动安装（新手用户）
 ```bash

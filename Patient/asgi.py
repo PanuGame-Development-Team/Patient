@@ -15,13 +15,14 @@ from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter,URLRouter
 from record import routing as R_routing
-
+from aichat import routing as AI_routing
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            R_routing.websocket_urlpatterns
+            R_routing.websocket_urlpatterns + 
+            AI_routing.websocket_urlpatterns
         )
     ),
 })

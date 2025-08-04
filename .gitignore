@@ -1,8 +1,8 @@
 __pycache__/
 static_root/
 db.sqlite3
-tests.py
 migrations/
 properties.py
 uploads/
 exports
+test*

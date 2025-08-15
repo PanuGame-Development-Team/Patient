@@ -14,7 +14,7 @@ def loginview(request):
         password = request.POST.get("password","")
         if not username or not password:
             messages.error(request,"用户名密码都不能为空")
-            return redirect("")
+            return redirect("/login/?next=" + request.GET.get("next"))
         user = authenticate(request,username=username,password=password)
         if user:
             login(request,user)
@@ -22,7 +22,7 @@ def loginview(request):
             return redirect("/" if not request.GET.get("next") else request.GET.get("next"))
         else:
             messages.error(request,"用户名或密码错误")
-            return redirect("")
+            return redirect("/login/?next=" + request.GET.get("next"))
 @require_http_methods(["GET"])
 @login_required
 def logoutview(request):
